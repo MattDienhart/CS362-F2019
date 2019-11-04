@@ -283,6 +283,33 @@ int main() {
    printf("Checking if player 2's discard pile has stayed the same: ");
    custom_assert(G.discardCount[player2] == 0);
 
+   // test #10: player to the left is player 2, 2 ambassador cards in the discard pile only
+   printf(" -- Test #10 --\n");
+   initializeGame(2, k, seed, &G);
+   G.handCount[player1] = 5;
+   G.coins = 0;
+   G.numActions = 1;
+   G.deckCount[player2] = 0;
+   G.discardCount[player2] = 2;
+   G.discard[player2][0] = ambassador;
+   G.discard[player2][1] = ambassador;
+
+   tributeCardEffect(player1, &G);
+
+   // show test results
+   printf("Checking if numActions has increased by 2: ");
+   custom_assert(G.numActions == 3);
+   printf("Checking if coin count has stayed the same: ");
+   custom_assert(G.coins == 0);
+   printf("Checking if player 1's hand count has stayed the same: ");
+   custom_assert(G.handCount[player1] == 5);
+   printf("Checking if player 2's discard pile has stayed the same: ");
+   custom_assert(G.discardCount[player2] == 2);
+   printf("Checking if player 2 discarded an ambassador card: ");
+   custom_assert(G.discard[player2][0] == ambassador);
+   printf("Checking if player 2 discarded another ambassador card: ");
+   custom_assert(G.discard[player2][1] == ambassador);
+
    printf("Testing completed.\n");
 
    return 0;
