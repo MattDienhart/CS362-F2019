@@ -1087,7 +1087,7 @@ int minionCardEffect(int choice1, int choice2, int currentPlayer, struct gameSta
    //discard card from hand
    discardCard(handPos, currentPlayer, state, 0);
 
-   if (choice2) {
+   if (choice1) { // bug removed during testing
       state->coins = state->coins + 2;
    }
    else if (choice2) {		//discard hand, redraw 4, other players with 5+ cards discard hand and draw 4
@@ -1140,8 +1140,9 @@ int ambassadorCardEffect(int choice1, int choice2, int currentPlayer, struct gam
    }
   
    // count how many copies of "choice1" card are in the player's hand
-   for (int i = 0; i < state->handCount[currentPlayer]; j++) {
-      if (i != handPos && i == state->hand[currentPlayer][choice1] && i != choice1)
+   for (int i = 0; i < state->handCount[currentPlayer]; i++) { // fixed bug from Assignment 2
+      if (i != handPos && state->hand[currentPlayer][i] == state->hand[currentPlayer][choice1] 
+          && i != choice1) // fixed bug from original code
       {
          j++;
       }
@@ -1188,6 +1189,12 @@ int tributeCardEffect(int currentPlayer, struct gameState *state)
 
    // find the next player sequentially from the current player
    int nextPlayer = currentPlayer +1;
+
+   // if next player is beyond the bounds of the player set, reset to player 0
+   // fixed bug from Assignment 2
+   if (nextPlayer > (state->numPlayers -1)) {
+      nextPlayer = 0;
+   }
 
    // process card reveals
    if ((state->discardCount[nextPlayer] + state->deckCount[nextPlayer]) <= 1) {
@@ -1251,7 +1258,8 @@ int tributeCardEffect(int currentPlayer, struct gameState *state)
 
 int mineCardEffect(int choice1, int choice2, int currentPlayer, struct gameState *state, int handPos)
 {
-        int j = state->hand[currentPlayer+1][choice1];  //store card we will trash
+        int j = state->hand[currentPlayer][choice1];  //store card we will trash
+                                                      // removed bug from Assignment 2
 
         // if chosen card is not a treasure card, the operation fails
         if (state->hand[currentPlayer][choice1] == copper) {
