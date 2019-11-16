@@ -66,17 +66,17 @@ void runtest() {
       G.numBuys = -10 + (rand() % 21); // "numBuys" is a random integer from -10 to 10
       G.coins = -10 + (rand() % 21); // "coins" is a random integer from -10 to 10
 
-      G.handCount[player] = -10 + (rand() % (MAX_HAND + 11)); // random hand size -10 to MAX_HAND
+      G.handCount[player] = rand() % (MAX_HAND + 1); // random hand size 0 to MAX_HAND
       for (i=0; i<G.handCount[player]; i++) {
          G.hand[player][i] = rand() % 27; // get random card
       }
 
-      G.discardCount[player] = -10 + (rand() % (MAX_HAND + 11));
+      G.discardCount[player] = rand() % (MAX_HAND + 1); // random discard size 0 to MAX_HAND
       for (i=0; i<G.discardCount[player]; i++) {
          G.discard[player][i] = rand() % 27; // get random card
       }
 
-      G.supplyCount[estate] = -10 + (rand() % 101); // random amount of estate cards in supply 
+      G.supplyCount[estate] = 0 + (rand() % 21); // random amount of estate cards in supply 
 
       // save preconditions for later comparisons
       initBuys = G.numBuys;
@@ -197,8 +197,18 @@ int main() {
    // seed the random number generator
    srand(time(NULL));
 
+   // keep track of how long it takes to run the tests
+   clock_t timer;
+   double total_time;
+   timer = clock();
+
    // start the random tests
    runtest();
+
+   // determine the timer value and print it
+   timer = clock() - timer;
+   total_time = ((double)timer)/CLOCKS_PER_SEC; // time in seconds
+   printf("The tests took a total of %f seconds.\n", total_time);
 
    return 0;
 }
