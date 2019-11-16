@@ -1189,6 +1189,11 @@ int tributeCardEffect(int currentPlayer, struct gameState *state)
    // find the next player sequentially from the current player
    int nextPlayer = currentPlayer +1;
 
+   // if the next player is beyond the bounds of the player set, reset player to 0
+   if (nextPlayer > (state->numPlayers - 1)) {
+      nextPlayer = 0;
+   }
+
    // process card reveals
    if ((state->discardCount[nextPlayer] + state->deckCount[nextPlayer]) <= 1) {
       if (state->deckCount[nextPlayer] > 0) {

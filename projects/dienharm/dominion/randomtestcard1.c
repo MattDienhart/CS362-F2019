@@ -29,6 +29,8 @@ void runtest() {
    int tcCount = 0; // the tcCount variable keeps track of loop iterations
    int state = 0;  // the state variable is used to track coverage progress
    int i;
+   int j;
+   int chosenCard;
 
    // game state variables
    struct gameState G;
@@ -54,9 +56,21 @@ void runtest() {
       estateCardInSupply = 0;
 
       // initialize random game state
+
+      // populate the k array, making sure not to have duplicate elements
       for (i=0; i<10; i++) {
-         k[i] = rand() % 27; // choose a random card from the CARD enum
+         chosenCard = 0;
+         while (chosenCard == 0) {
+            k[i] = rand() % 27; // choose a random card from the CARD enum
+            chosenCard = 1;
+            for (j=0; j<i; j++) {
+               if (k[i] == k[j]) { // if chosen card matches an already chosen card, try again
+                  chosenCard = 0;
+               }
+            }
+         }
       }
+
       player = rand() % MAX_PLAYERS; // randomly choose the current player
       seed = 1 + (rand() % 10); // choose a random seed value from 1 to 10
 

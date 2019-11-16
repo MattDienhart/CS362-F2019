@@ -61,13 +61,15 @@ void runtest() {
       //memset(&G, 23, sizeof(struct gameState));
 
       // initialize random game state
+
+      // populate the k array with random cards, making sure there are no duplicate elements
       for (i=0; i<10; i++) {
          chosenCard = 0;
          while (chosenCard == 0) {
             k[i] = rand() % 27; // choose a random card from the CARD enum
             chosenCard = 1;
             for (j=0; j<i; j++) {
-               if (k[i] == k[j]) {
+               if (k[i] == k[j]) { // if the chosen card was already chosen earlier, try again
                   chosenCard = 0;
                }
             }
@@ -76,7 +78,7 @@ void runtest() {
 
       numPlayers = 2 + (rand() % (MAX_PLAYERS - 1)); // choose a random number of players from 2 to MAX_PLAYERS
       player = rand() % numPlayers; // randomly choose the current player
-      printf("Current player: %d, number of players: %d\n", player+1, numPlayers);
+
       seed = 1 + (rand() % 10); // choose a random seed value from 1 to 10
 
       initializeGame(numPlayers, k, seed, &G); // initializes the game state
@@ -101,7 +103,7 @@ void runtest() {
 
       // set up each player with a randomized deck
       for (playerID=0; playerID<numPlayers; playerID++) {
-         G.deckCount[playerID] = 1 + (rand() % MAX_DECK); // random deck size 1 to MAX_DECK
+         G.deckCount[playerID] = rand() % (MAX_DECK + 1); // random deck size 0 to MAX_DECK
          for (i=0; i<G.deckCount[playerID]; i++) {
             G.deck[playerID][i] = rand() % 27; // get random card
          }
@@ -132,6 +134,7 @@ void runtest() {
       // print info for this loop iteration
       printf("Iteration %d: choice1 = %d, choice2 = %d, minionCardInHand = %d, state = %d\n", 
              tcCount, choice1, choice2, minionCardInHand, state);
+      printf("Current player: %d, number of players: %d\n", player+1, numPlayers);
 
       // call test function
       minionCardEffect(choice1, choice2, player, &G, handPos);

@@ -27,11 +27,16 @@ randomtest1: randomtestcard1.c dominion.o
 randomtest2: randomtestcard2.c dominion.o
 	gcc -o randomtestcard2 randomtestcard2.c dominion.o rngs.o -g $(CFLAGS)
 
-randomtestresults: randomtestcard1.c randomtestcard2.c dominion.o
+randomtest3: randomtestcard3.c dominion.o
+	gcc -o randomtestcard3 randomtestcard3.c dominion.o rngs.o -g $(CFLAGS)
+
+randomtestresults: randomtestcard1.c randomtestcard2.c randomtestcard3.c dominion.o
 	gcc -o randomtestcard1 randomtestcard1.c dominion.o rngs.o -g $(CFLAGS)
 	gcc -o randomtestcard2 randomtestcard2.c dominion.o rngs.o -g $(CFLAGS)
+	gcc -o randomtestcard3 randomtestcard3.c dominion.o rngs.o -g $(CFLAGS)
 	randomtestcard1 &> randomtestresults.out
 	randomtestcard2 >> randomtestresults.out
+	randomtestcard3 >> randomtestresults.out
 	gcov dominion.c -b -f >> randomtestresults.out
 	cat dominion.c.gcov >> randomtestresults.out
 
