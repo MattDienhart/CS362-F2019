@@ -50,6 +50,9 @@ void runtest() {
    int initDiscardCount[MAX_PLAYERS];
    int revealedCardA;
    int revealedCardB;
+   int bonusActionAmt;
+   int bonusCoinAmt;
+   int bonusHandAmt;
 
    printf("Starting random tests of the tributeCardEffect() function:\n");
 
@@ -170,41 +173,100 @@ void runtest() {
              tcCount, revealedCardA, revealedCardB, state);
       printf("Current player: %d, next player: %d, total players: %d\n", player, nextPlayer,
              numPlayers);
-      printf("Next player's deck size: %d\n", initDeckCount[nextPlayer]);
+      printf("Next player's deck size: %d, discard pile size: %d\n", 
+             initDeckCount[nextPlayer], initDiscardCount[nextPlayer]);
 
       // call test function
       tributeCardEffect(player, &G);
+
+      // handle assertions based on what cards were revealed
+      bonusActionAmt = 0;
+      bonusCoinAmt = 0;
+      bonusHandAmt = 0;
+
+      // first revealed card:
+      if (revealedCardA == estate || revealedCardA == duchy || revealedCardA == province ||
+          revealedCardA == great_hall || revealedCardA == gardens) {
+         bonusHandAmt += 2;
+      } else if (revealedCardA > 3 && revealedCardA <= 6) {
+         bonusCoinAmt += 2;
+      } else if (revealedCardA > 6 && revealedCardA <= 26 && revealedCardA != gardens &&
+                 revealedCardA != great_hall) {
+         bonusActionAmt += 2;
+      } 
+
+      // second revealed card:
+      if (revealedCardB != revealedCardA) {
+         if (revealedCardB == estate || revealedCardB == duchy || revealedCardB == province ||
+             revealedCardB == great_hall || revealedCardB == gardens) {
+            bonusHandAmt += 2;
+         } else if (revealedCardB > 3 && revealedCardB <= 6) {
+            bonusCoinAmt += 2;
+         } else if (revealedCardB > 6 && revealedCardB <= 26 && revealedCardB != gardens &&
+                    revealedCardB != great_hall) {
+            bonusActionAmt += 2;
+         }
+      }
+
+      // print assert outcomes regardless of state
+      // assertions for bonus actions
+      if (bonusActionAmt > 0) {
+         printf("Checking if numActions has increased by %d: ", bonusActionAmt);
+         custom_assert(G.numActions == (initActions + bonusActionAmt));
+      } else {
+         printf("Checking if numActions has stayed the same: ");
+         custom_assert(G.numActions == initActions);
+      }
+
+      // assertions for bonus coins
+      if (bonusCoinAmt > 0) {
+         printf("Checking if coin count has increased by %d: ", bonusCoinAmt);
+         custom_assert(G.coins == (initCoinCount + bonusCoinAmt));
+      } else {
+         printf("Checking if coin count has stayed the same: ");
+         custom_assert(G.coins == initCoinCount);
+      }
+
+      // assertions for bonus card draws
+      if (bonusHandAmt > 0) {
+         printf("Checking if current player's hand count has increased by %d: ", bonusHandAmt);
+         custom_assert(G.handCount[player] == (initHandCount[player] + bonusHandAmt));
+      } else {
+         printf("Checking if current player's hand count has stayed the same: ");
+         custom_assert(G.handCount[player] == initHandCount[player]);
+      }
+
+      // assertions for next player's discard pile
+      if (initDeckCount[nextPlayer] >= 2) {
+         printf("Checking if next player's discard pile has increased by 2: ");
+         custom_assert(G.discardCount[nextPlayer] == (initDiscardCount[nextPlayer] + 2));
+      } else if (initDeckCount[nextPlayer] == 1) {
+         printf("Checking if next player's discard pile has increased by 1: ");
+         custom_assert(G.discardCount[nextPlayer] == (initDiscardCount[nextPlayer] + 1));
+      } else if (initDiscardCount[nextPlayer] >= 2) {
+         printf("Checking if next player's discard pile has 2 cards: ");
+         custom_assert(G.discardCount[nextPlayer] == 2);
+      } else if (initDiscardCount[nextPlayer] == 1) {
+         printf("Checking if next player's discard pile has 1 card: ");
+         custom_assert(G.discardCount[nextPlayer] == 1);
+      } else {
+         printf("Checking if next player's discard pile has stayed the same: ");
+         custom_assert(G.discardCount[nextPlayer] == initDiscardCount[nextPlayer]);
+      }
  
       // state #1: 2 of the same treasure card are revealed from the deck
       if (initDeckCount[nextPlayer] >= 2 && revealedCardA == revealedCardB &&
           (revealedCardA > 3 && revealedCardA <= 6)) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has stayed the same: ");
-         custom_assert(G.numActions == initActions);
-         printf("Checking if coin count has increased by 2: ");
-         custom_assert(G.coins == (initCoinCount + 2));
-         printf("Checking if current player's hand count has stayed the same: ");
-         custom_assert(G.handCount[player] == initHandCount[player]);
-         printf("Checking if next player's discard pile has increased by 2: ");
-         custom_assert(G.discardCount[nextPlayer] == (initDiscardCount[nextPlayer] + 2));
- 
+
          // if this is the first time this condition has occurred, advance the state
          if (state == 0) { state = 1; }
       }
       
       // state #2: player to the left is player 1, 2 of the same action card are revealed
       if (initDeckCount[nextPlayer] >= 2 && revealedCardA == revealedCardB &&
-               (revealedCardA > 6 && revealedCardB <= 26) && nextPlayer == 0) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has increased by 2: ");
-         custom_assert(G.numActions == (initActions + 2));
-         printf("Checking if coin count has stayed the same: ");
-         custom_assert(G.coins == initCoinCount);
-         printf("Checking if current player's hand count has stayed the same: ");
-         custom_assert(G.handCount[player] == initHandCount[player]);
-         printf("Checking if next player's discard pile has increased by 2: ");
-         custom_assert(G.discardCount[nextPlayer] == (initDiscardCount[nextPlayer] + 2));
-
+               (revealedCardA > 6 && revealedCardA <= 26 && revealedCardA != gardens &&
+                revealedCardA != great_hall) && nextPlayer == 0) {
+  
          // if this is the first time this condition has occurred, advance the state
          if (state == 1) { state = 2; }
       }
@@ -212,15 +274,6 @@ void runtest() {
       // state #3: 2 of the same victory card are revealed from the deck
       if (initDeckCount[nextPlayer] >= 2 && revealedCardA == revealedCardB &&
                (revealedCardA > 0 && revealedCardA <= 3)) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has stayed the same: ");
-         custom_assert(G.numActions == initActions);
-         printf("Checking if coin count has stayed the same: ");
-         custom_assert(G.coins == initCoinCount);
-         printf("Checking if current player's hand count has increased by 2: ");
-         custom_assert(G.handCount[player] == (initHandCount[player] + 2));
-         printf("Checking if next player's discard pile has increased by 2: ");
-         custom_assert(G.discardCount[nextPlayer] == (initDiscardCount[nextPlayer] + 2));
  
          // if this is the first time this condition has occurred, advance the state
          if (state == 2) { state = 3; }
@@ -230,15 +283,6 @@ void runtest() {
       if (initDeckCount[nextPlayer] >= 2 &&
                (revealedCardA > 0 && revealedCardA <= 3) &&
                (revealedCardB > 3 && revealedCardB <= 6)) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has stayed the same: ");
-         custom_assert(G.numActions == initActions);
-         printf("Checking if coin count has increased by 2: ");
-         custom_assert(G.coins == (initCoinCount + 2));
-         printf("Checking if current player's hand count has increased by 2: ");
-         custom_assert(G.handCount[player] == (initHandCount[player] + 2));
-         printf("Checking if next player's discard pile has increased by 2: ");
-         custom_assert(G.discardCount[nextPlayer] == (initDiscardCount[nextPlayer] + 2));
 
          // if this is the first time this condition has occurred, advance the state
          if (state == 3) { state = 4; }
@@ -248,16 +292,7 @@ void runtest() {
       if (initDeckCount[nextPlayer] >= 2 && revealedCardA != revealedCardB &&
                (revealedCardA > 3 && revealedCardA <= 6) &&
                (revealedCardB > 3 && revealedCardB <= 6)) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has stayed the same: ");
-         custom_assert(G.numActions == initActions);
-         printf("Checking if coin count has increased by 4: ");
-         custom_assert(G.coins == (initCoinCount + 4));
-         printf("Checking if current player's hand count has stayed the same: ");
-         custom_assert(G.handCount[player] == initHandCount[player]);
-         printf("Checking if next player's discard pile has increased by 2: ");
-         custom_assert(G.discardCount[nextPlayer] == (initDiscardCount[nextPlayer] + 2));
- 
+
          // if this is the first time this condition has occurred, advance the state
          if (state == 4) { state = 5; }
       }
@@ -265,17 +300,8 @@ void runtest() {
       // state #6: 1 action card is revealed from the deck and 1 victory card is revealed from
       // the discard pile
       if (initDeckCount[nextPlayer] == 1 && initDiscardCount[nextPlayer] == 1 &&
-               (revealedCardA > 6 && revealedCardA <= 26) &&
-               (revealedCardB > 0 && revealedCardB <= 3)) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has increased by 2: ");
-         custom_assert(G.numActions == (initActions + 2));
-         printf("Checking if coin count has stayed the same: ");
-         custom_assert(G.coins == initCoinCount);
-         printf("Checking if current player's hand count has increased by 2: ");
-         custom_assert(G.handCount[player] == (initHandCount[player] + 2));
-         printf("Checking if next player's discard pile has increased by 2: ");
-         custom_assert(G.discardCount[nextPlayer] == (initDiscardCount[nextPlayer] + 2));
+               (revealedCardA > 6 && revealedCardA <= 26 && revealedCardA != gardens &&
+                revealedCardA != great_hall) && (revealedCardB > 0 && revealedCardB <= 3)) {
 
          // if this is the first time this condition has occurred, advance the state
          if (state == 5) { state = 6; }
@@ -284,32 +310,15 @@ void runtest() {
       // state #7: 1 treasure card is revealed from the deck, there are no other cards
       if (initDeckCount[nextPlayer] == 1 && initDiscardCount[nextPlayer] == 0 &&
                (revealedCardA > 3 && revealedCardA <= 6)) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has stayed the same: ");
-         custom_assert(G.numActions == initActions);
-         printf("Checking if coin count has increased by 2: ");
-         custom_assert(G.coins == (initCoinCount + 2));
-         printf("Checking if current player's hand count has stayed the same: ");
-         custom_assert(G.handCount[player] == initHandCount[player]);
-         printf("Checking if next player's discard pile has increased by 1: ");
-         custom_assert(G.discardCount[nextPlayer] == (initDiscardCount[nextPlayer] + 1));
- 
+
          // if this is the first time this condition has occurred, advance the state
          if (state == 6) { state = 7; }
       }
 
       // state #8: 1 action card is revealed from the discard pile, there are no other cards
       if (initDeckCount[nextPlayer] == 0 && initDiscardCount[nextPlayer] == 1 &&
-               (revealedCardA > 6 && revealedCardA <= 26)) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has increased by 2: ");
-         custom_assert(G.numActions == (initActions + 2));
-         printf("Checking if coin count has stayed the same: ");
-         custom_assert(G.coins == initCoinCount);
-         printf("Checking if current player's hand count has stayed the same: ");
-         custom_assert(G.handCount[player] == initHandCount[player]);
-         printf("Checking if next player's discard pile has stayed at 1: ");
-         custom_assert(G.discardCount[nextPlayer] == 1);
+               (revealedCardA > 6 && revealedCardA <= 26 && revealedCardA != gardens && 
+                revealedCardA != great_hall)) {
 
          // if this is the first time this condition has occurred, advance the state
          if (state == 7) { state = 8; }
@@ -317,15 +326,6 @@ void runtest() {
 
       // state #9: player to the left has no cards at all, current player gets no benefit
       if (initDeckCount[nextPlayer] == 0 && initDiscardCount[nextPlayer] == 0) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has stayed the same: ");
-         custom_assert(G.numActions == initActions);
-         printf("Checking if coin count has stayed the same: ");
-         custom_assert(G.coins == initCoinCount);
-         printf("Checking if current player's hand count has stayed the same: ");
-         custom_assert(G.handCount[player] == initHandCount[player]);
-         printf("Checking if next player's discard pile has stayed the same: ");
-         custom_assert(G.discardCount[nextPlayer] == initDiscardCount[nextPlayer]);
 
          // if this is the first time this condition has occurred, advance the state
          if (state == 8) { state = 9; }
@@ -333,16 +333,8 @@ void runtest() {
 
       // state #10: 2 of the same action card are revealed from the discard pile
       if (initDeckCount[nextPlayer] == 0 && initDiscardCount[nextPlayer] == 2 &&
-               (revealedCardA > 6 && revealedCardA <= 26) && revealedCardA == revealedCardB) {
-         // assertions to verify function behavior
-         printf("Checking if numActions has increased by 2: ");
-         custom_assert(G.numActions == (initActions + 2));
-         printf("Checking if coin count has stayed the same: ");
-         custom_assert(G.coins == initCoinCount);
-         printf("Checking if current player's hand count has stayed the same: ");
-         custom_assert(G.handCount[player] == initHandCount[player]);
-         printf("Checking if next player's discard pile has stayed at 2: ");
-         custom_assert(G.discardCount[nextPlayer] == 2);
+               (revealedCardA > 6 && revealedCardA <= 26 && revealedCardA != gardens &&
+                revealedCardA != great_hall) && revealedCardA == revealedCardB) {
 
          // if this is the first time this condition has occurred, advance the state
          if (state == 9) { state = 10; }
