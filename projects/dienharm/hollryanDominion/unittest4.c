@@ -53,12 +53,14 @@ int main() {
    const int player2 = 1;
    const int player3 = 2;
    const int player4 = 3;
+   int bonus = 0;
    
    // set up test-specific conditions
    
    // test #1: player to the left is player 2, 2 copper cards are revealed
    printf(" -- Test #1 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    G.coins = 0;
    G.numActions = 1;
@@ -66,7 +68,7 @@ int main() {
    memcpy(G.deck[player2], coppers, sizeof(int) * G.deckCount[player2]);
    G.discardCount[player2] = 0;
 
-   tributeCardEffect(player1, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
    // show test result
    printf("Checking if numActions has stayed the same: ");
@@ -85,6 +87,7 @@ int main() {
    // test #2: player to the left is player 1, 2 minion cards are revealed
    printf(" -- Test #2 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 1;
    G.handCount[player2] = 5;
    G.coins = 0;
    G.numActions = 1;
@@ -92,7 +95,7 @@ int main() {
    memcpy(G.deck[player1], minions, sizeof(int) * G.deckCount[player1]);
    G.discardCount[player1] = 0;
 
-   tributeCardEffect(player2, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
    // show test results
    printf("Checking if numActions has increased by 2: ");
@@ -111,6 +114,7 @@ int main() {
    // test #3: player to the left is player 1, 2 estate cards are revealed
    printf(" -- Test #3 --\n");
    initializeGame(4, k, seed, &G);
+   G.whoseTurn = 3;
    G.handCount[player4] = 5;
    G.coins = 0;
    G.numActions = 1;
@@ -118,7 +122,7 @@ int main() {
    memcpy(G.deck[player1], estates, sizeof(int) * G.deckCount[player1]);
    G.discardCount[player1] = 0;
 
-   tributeCardEffect(player4, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
    // show test results
    printf("Checking if numActions has stayed the same: ");
@@ -137,6 +141,7 @@ int main() {
    // test #4: player to the left is player 3, 1 estate card and 1 copper card are revealed
    printf(" -- Test #4 --\n");
    initializeGame(4, k, seed, &G);
+   G.whoseTurn = 1;
    G.handCount[player2] = 5;
    G.coins = 0;
    G.numActions = 1;
@@ -145,7 +150,7 @@ int main() {
    G.deck[player3][19] = copper;
    G.discardCount[player3] = 0;
 
-   tributeCardEffect(player2, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
    // show test results
    printf("Checking if numActions has stayed the same: ");
@@ -164,6 +169,7 @@ int main() {
    // test #5: player to the left is player 4, 1 copper card and 1 silver card are revealed
    printf(" -- Test #5 --\n");
    initializeGame(4, k, seed, &G);
+   G.whoseTurn = 2;
    G.handCount[player3] = 5;
    G.coins = 0;
    G.numActions = 1;
@@ -172,7 +178,7 @@ int main() {
    G.deck[player4][19] = silver;
    G.discardCount[player4] = 0;
 
-   tributeCardEffect(player3, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
    // show test results
    printf("Checking if numActions has stayed the same: ");
@@ -191,6 +197,7 @@ int main() {
    // test #6: player to the left is player 2, 1 minion card in deck and 1 duchy card in discard
    printf(" -- Test #6 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    G.coins = 0;
    G.numActions = 1;
@@ -199,7 +206,7 @@ int main() {
    G.discardCount[player2] = 1;
    G.discard[player2][0] = duchy;
 
-   tributeCardEffect(player1, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
    // show test results
    printf("Checking if numActions has increased by 2: ");
@@ -218,6 +225,7 @@ int main() {
    // test #7: player to the left is player 2, 1 silver card in the deck only
    printf(" -- Test #7 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    G.coins = 0;
    G.numActions = 1;
@@ -225,7 +233,7 @@ int main() {
    G.deck[player2][0] = silver;
    G.discardCount[player2] = 0;
 
-   tributeCardEffect(player1, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
    // show test results
    printf("Checking if numActions has stayed the same: ");
@@ -242,6 +250,7 @@ int main() {
    // test #8: player to the left is player 2, 1 ambassador card in the discard pile only
    printf(" -- Test #8 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    G.coins = 0;
    G.numActions = 1;
@@ -249,7 +258,7 @@ int main() {
    G.discardCount[player2] = 1;
    G.discard[player2][0] = ambassador;
 
-   tributeCardEffect(player1, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
    // show test results
    printf("Checking if numActions has increased by 2: ");
@@ -265,13 +274,15 @@ int main() {
 
    // test #9: player to the left is player 2, has no cards at all, player 1 gains no benefit
    printf(" -- Test #9 --\n");
+   initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    G.coins = 0;
    G.numActions = 1;
    G.deckCount[player2] = 0;
    G.discardCount[player2] = 0;
 
-   tributeCardEffect(player1, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
   
    // show test results
    printf("Checking if numActions has stayed the same: ");
@@ -286,6 +297,7 @@ int main() {
    // test #10: player to the left is player 2, 2 ambassador cards in the discard pile only
    printf(" -- Test #10 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    G.coins = 0;
    G.numActions = 1;
@@ -294,7 +306,7 @@ int main() {
    G.discard[player2][0] = ambassador;
    G.discard[player2][1] = ambassador;
 
-   tributeCardEffect(player1, &G);
+   TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
    // show test results
    printf("Checking if numActions has increased by 2: ");

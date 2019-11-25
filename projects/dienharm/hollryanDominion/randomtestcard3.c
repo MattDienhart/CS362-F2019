@@ -32,6 +32,7 @@ void runtest() {
    int playerID;
    int j;
    int chosenCard;
+   int bonus = 0;
 
    // game state variables
    struct gameState G;
@@ -177,7 +178,7 @@ void runtest() {
              initDeckCount[nextPlayer], initDiscardCount[nextPlayer]);
 
       // call test function
-      tributeCardEffect(player, &G);
+      TributeCardEffect(0, 0, 0, 0, &G, 0, &bonus);
 
       // handle assertions based on what cards were revealed
       bonusActionAmt = 0;

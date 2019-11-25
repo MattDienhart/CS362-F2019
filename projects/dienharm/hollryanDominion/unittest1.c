@@ -45,20 +45,23 @@ int main() {
    // set up the game state for testing
    memset(&G, 23, sizeof(struct gameState)); // set the game state to 23 for all parameters
    int seed = 5; // arbitrary seed for RNG
-   int player = 0;
+   G.whoseTurn = 0;
+   int player = G.whoseTurn;
    
    // set up test-specific conditions
    
    // test #1: player chooses to discard an estate card and gain 4 coins
    printf(" -- Test #1 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = player;
    G.numBuys = 1;
    G.coins = 0;
    G.handCount[player] = 5;
    memcpy(G.hand[player], estates, sizeof(int) * G.handCount[player]);
    int choice = 1;
+   int bonus = 0;
 
-   baronCardEffect(choice, player, &G);
+   baronCardEffect(0, choice, 0, 0, &G, 0, &bonus);
 
    // show test result
    printf("Checking if numBuys has increased by 1: ");
@@ -71,6 +74,7 @@ int main() {
    // test #2: player chooses to discard an estate card, but does not have one
    printf(" -- Test #2 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = player;
    G.numBuys = 1;
    G.coins = 0;
    G.handCount[player] = 5;
@@ -79,7 +83,7 @@ int main() {
    G.supplyCount[estate] = 8;
    choice = 1;
 
-   baronCardEffect(choice, player, &G);
+   baronCardEffect(0, choice, 0, 0, &G, 0, &bonus);
 
    // show test result
    printf("Checking if numBuys has increased by 1: ");
@@ -94,6 +98,7 @@ int main() {
    // test #3: player chooses to gain an estate card from supply
    printf(" -- Test #3 -- \n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = player;
    G.numBuys = 1;
    G.coins = 0;
    G.handCount[player] = 5;
@@ -102,7 +107,7 @@ int main() {
    G.discardCount[player] = 0;
    choice = 0;
 
-   baronCardEffect(choice, player, &G);
+   baronCardEffect(0, choice, 0, 0, &G, 0, &bonus);
 
    // show test result
    printf("Checking if numBuys has increased by 1: ");
@@ -117,6 +122,7 @@ int main() {
    // test #4: player chooses to gain an estate card but supply is empty
    printf(" -- Test #3 -- \n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = player;
    G.numBuys = 1;
    G.coins = 0;
    G.handCount[player] = 5;
@@ -125,7 +131,7 @@ int main() {
    G.discardCount[player] = 0;
    choice = 0;
 
-   baronCardEffect(choice, player, &G);
+   baronCardEffect(0, choice, 0, 0, &G, 0, &bonus);
 
    // show test result
    printf("Checking if numBuys has stayed the same: ");

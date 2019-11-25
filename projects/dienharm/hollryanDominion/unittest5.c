@@ -48,12 +48,14 @@ int main() {
    memset(&G, 23, sizeof(struct gameState)); // set the game state to 23 for all parameters
    int seed = 5; // arbitrary seed for RNG
    const int player1 = 0;
+   int bonus = 0;
    
    // set up test-specific conditions
    
    // test #1: player trashes a copper to gain a silver
    printf(" -- Test #1 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], coppers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = mine;
@@ -63,7 +65,7 @@ int main() {
    int choice2 = 5; // ID of card to be gained from supply
    int handPos = 4; // hand position of the mine card itself
 
-   mineCardEffect(choice1, choice2, player1, &G, handPos);
+   MineCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if hand count has decreased by 2: ");
@@ -78,6 +80,7 @@ int main() {
    // test #2: player trashes a silver to gain a gold
    printf(" -- Test #2 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], silvers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = mine;
@@ -87,7 +90,7 @@ int main() {
    choice2 = 6; // ID of card to be gained from supply
    handPos = 4; // hand position of the mine card itself
 
-   mineCardEffect(choice1, choice2, player1, &G, handPos);
+   MineCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if hand count has decreased by 2: ");
@@ -102,6 +105,7 @@ int main() {
    // test #3: player trashes a silver to gain a silver
    printf(" -- Test #3 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], silvers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = mine;
@@ -111,7 +115,7 @@ int main() {
    choice2 = 5; // ID of card to be gained from supply
    handPos = 4; // hand position of the mine card itself
 
-   mineCardEffect(choice1, choice2, player1, &G, handPos);
+   MineCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if hand count has decreased by 2: ");
@@ -126,6 +130,7 @@ int main() {
    // test #4: player tries to trash a non-treasure card and nothing happens
    printf(" -- Test #4 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], minions, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = mine;
@@ -135,7 +140,7 @@ int main() {
    choice2 = 5; // ID of card to be gained from supply
    handPos = 4; // hand position of the mine card itself
 
-   mineCardEffect(choice1, choice2, player1, &G, handPos);
+   MineCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if hand count has decreased by 2: ");
@@ -150,6 +155,7 @@ int main() {
    // test #5: player tries to trash a treasure card they don't have and nothing happens
    printf(" -- Test #5 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], coppers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = mine;
@@ -159,7 +165,7 @@ int main() {
    choice2 = 5; // ID of card to be gained from supply
    handPos = 4; // hand position of the mine card itself
 
-   mineCardEffect(choice1, choice2, player1, &G, handPos);
+   MineCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if hand count has stayed the same: ");
@@ -172,6 +178,7 @@ int main() {
    // test #6: player tries to trash a copper and gain a gold and nothing happens
    printf(" -- Test #6 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], coppers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = mine;
@@ -181,7 +188,7 @@ int main() {
    choice2 = 6; // ID of card to be gained from supply
    handPos = 4; // hand position of the mine card itself
 
-   mineCardEffect(choice1, choice2, player1, &G, handPos);
+   MineCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if hand count has stayed the same: ");
@@ -194,6 +201,7 @@ int main() {
    // test #7: player tries to trash a copper and gain a non-treasure card and nothing happens
    printf(" -- Test #7 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], coppers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = mine;
@@ -203,7 +211,7 @@ int main() {
    choice2 = 1; // ID of card to be gained from supply
    handPos = 4; // hand position of the mine card itself
 
-   mineCardEffect(choice1, choice2, player1, &G, handPos);
+   MineCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if hand count has stayed the same: ");

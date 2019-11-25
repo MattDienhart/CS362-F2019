@@ -31,6 +31,7 @@ void runtest() {
    int i;
    int j;
    int chosenCard;
+   int bonus = 0;
 
    // game state variables
    struct gameState G;
@@ -79,6 +80,7 @@ void runtest() {
       choice = -10 + (rand() % 21); // "choice" is a random integer from -10 to 10
       G.numBuys = -10 + (rand() % 21); // "numBuys" is a random integer from -10 to 10
       G.coins = -10 + (rand() % 21); // "coins" is a random integer from -10 to 10
+      G.whoseTurn = player;
 
       G.handCount[player] = rand() % (MAX_HAND + 1); // random hand size 0 to MAX_HAND
       for (i=0; i<G.handCount[player]; i++) {
@@ -122,7 +124,7 @@ void runtest() {
              tcCount, choice, estateCardInHand, estateCardInSupply, state);
 
       // call test function
-      baronCardEffect(choice, player, &G);
+      baronCardEffect(0, choice, 0, 0, &G, 0, &bonus);
  
       // state #1: player chooses to discard an estate card, and it is valid
       if (choice > 0 && estateCardInHand == 1) {

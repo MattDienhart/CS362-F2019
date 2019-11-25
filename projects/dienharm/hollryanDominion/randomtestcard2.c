@@ -42,6 +42,7 @@ void runtest() {
    int choice1;
    int choice2;
    int handPos;
+   int bonus = 0;
 
    // variables for saving preconditions
    int minionCardInHand;
@@ -137,7 +138,7 @@ void runtest() {
       printf("Current player: %d, number of players: %d\n", player+1, numPlayers);
 
       // call test function
-      minionCardEffect(choice1, choice2, player, &G, handPos);
+      MinionCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
  
       // state #1: player chooses to discard the minion card and gain 2 coins, it is valid
       if (choice1 != 0 && choice2 == 0 && minionCardInHand == 1) {

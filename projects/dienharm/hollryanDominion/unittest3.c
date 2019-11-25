@@ -49,12 +49,14 @@ int main() {
    const int player2 = 1;
    const int player3 = 2;
    const int player4 = 3;
+   int bonus = 0;
    
    // set up test-specific conditions
    
    // test #1: player chooses to discard 2 coppper cards, other players gain 1 copper card each
    printf(" -- Test #1 --\n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], coppers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = ambassador;
@@ -65,7 +67,7 @@ int main() {
    int choice2 = 2; // discard 2 copper
    int handPos = 4; // last card is the ambassador card
 
-   ambassadorCardEffect(choice1, choice2, player1, &G, handPos);
+   AmbassadorCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if player 1's hand count has decreased by 3: ");
@@ -84,6 +86,7 @@ int main() {
    // test #2: player chooses to discard 1 copper card, the other players gain 1 copper card each
    printf(" -- Test #2 --\n");
    initializeGame(4, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], coppers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = ambassador;
@@ -96,7 +99,7 @@ int main() {
    choice2 = 1; // discard 1 copper
    handPos = 4; // last card is the ambassador card
 
-   ambassadorCardEffect(choice1, choice2, player1, &G, handPos);
+   AmbassadorCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if player 1's hand count has decreased by 2: ");
@@ -121,6 +124,7 @@ int main() {
    // test #3: player chooses to discard 2 copper cards but only has 1, nothing happens
    printf(" -- Test #3 -- \n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], silvers, sizeof(int) * (G.handCount[player1] - 2));
    G.hand[player1][3] = copper;
@@ -132,7 +136,7 @@ int main() {
    choice2 = 2; // discard 2 coppers
    handPos = 4; // last card is the ambassador card
 
-   ambassadorCardEffect(choice1, choice2, player1, &G, handPos);
+   AmbassadorCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if player 1's hand count has stayed the same: ");
@@ -147,6 +151,7 @@ int main() {
    // test #4: player chooses to discard the ambassador card itself, nothing happens
    printf(" -- Test #4 -- \n");
    initializeGame(2, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], coppers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = ambassador;
@@ -157,7 +162,7 @@ int main() {
    choice2 = 1; // discard 1 ambaassador
    handPos = 4; // selected card is the fourth card in the player's hand, a copper card
 
-   ambassadorCardEffect(choice1, choice2, player1, &G, handPos);
+   AmbassadorCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if player 1's hand count has stayed the same: ");
@@ -173,6 +178,7 @@ int main() {
    // cards for all other players to draw 1
    printf(" -- Test #5 --\n");
    initializeGame(4, k, seed, &G);
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], coppers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = ambassador;
@@ -185,7 +191,7 @@ int main() {
    choice2 = 1; // discard 1 copper
    handPos = 4; // last card is the ambassador card
 
-   ambassadorCardEffect(choice1, choice2, player1, &G, handPos);
+   AmbassadorCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if player 1's hand count has decreased by 2: ");

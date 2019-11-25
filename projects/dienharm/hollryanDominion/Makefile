@@ -41,12 +41,13 @@ unit5: unittest5.c dominion.o
 	gcc -o unit5 unittest5.c dominion.o rngs.o -g $(CFLAGS)
 
 unittestresults: unit1 unit2 unit3 unit4 unit5
-	unit1
-	unit2
-	unit3
-	unit4
-	unit5
-	gcov dominion.c -b -f > unittestresults.out
+	unit1 &> unittestresults.out
+	unit2 >> unittestresults.out
+	unit3 >> unittestresults.out
+	unit4 >> unittestresults.out
+	unit5 >> unittestresults.out
+	gcov dominion.c -b -f >> unittestresults.out
+	cat dominion.c.gcov >> randomtestresults.out
 
 randomtest1: randomtestcard1.c dominion.o
 	gcc -o randomtestcard1 randomtestcard1.c dominion.o rngs.o -g $(CFLAGS)

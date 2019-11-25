@@ -47,6 +47,7 @@ int main() {
    const int player2 = 1;
    const int player3 = 2;
    const int player4 = 3;
+   int bonus = 0;
    
    // set up test-specific conditions
    
@@ -55,6 +56,7 @@ int main() {
    initializeGame(4, k, seed, &G);
    G.numActions = 0;
    G.coins = 0;
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    memcpy(G.hand[player1], coppers, sizeof(int) * (G.handCount[player1] - 1));
    G.hand[player1][4] = minion;
@@ -63,7 +65,7 @@ int main() {
    int choice2 = 0;
    int handPos = 4; // selected card is the last card in the player's hand
 
-   minionCardEffect(choice1, choice2, player1, &G, handPos);
+   MinionCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if numActions has increased by 1: ");
@@ -82,6 +84,7 @@ int main() {
    initializeGame(4, k, seed, &G);
    G.numActions = 0;
    G.coins = 0;
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    G.handCount[player2] = 4;
    G.handCount[player3] = 5;
@@ -94,7 +97,7 @@ int main() {
    choice2 = 1;
    handPos = 4; // selected card is the last card in the player's hand
 
-   minionCardEffect(choice1, choice2, player1, &G, handPos);
+   MinionCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if numActions has increased by 1: ");
@@ -121,6 +124,7 @@ int main() {
    initializeGame(2, k, seed, &G);
    G.numActions = 0;
    G.coins = 0;
+   G.whoseTurn = 0;
    G.handCount[player1] = 5;
    G.handCount[player2] = 7;
    G.discardCount[player1] = 0;
@@ -129,7 +133,7 @@ int main() {
    choice2 = 0;
    handPos = 4; // selected card is the last card in the player's hand
 
-   minionCardEffect(choice1, choice2, player1, &G, handPos);
+   MinionCardEffect(0, choice1, choice2, 0, &G, handPos, &bonus);
 
    // show test result
    printf("Checking if numActions has stayed the same: ");

@@ -682,26 +682,26 @@ int getCost(int cardNumber)
 }
 
 
-int baronCardEffect()(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int baronCardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
-    int i;
-    int j;
-    int k;
-    int x;
-    int index;
+    //int i;
+    //int j;
+    //int k;
+    //int x;
+    //int index;
     int currentPlayer = whoseTurn(state);
     int nextPlayer = currentPlayer + 1;
 
-    int temphand[MAX_HAND];// moved above the if statement
-    int drawntreasure=0;
-    int cardDrawn;
-    int z = 0;// this is the counter for the temp hand
+    //int temphand[MAX_HAND];// moved above the if statement
+    //int drawntreasure=0;
+    //int cardDrawn;
+    //int z = 0;// this is the counter for the temp hand
     if (nextPlayer > (state->numPlayers - 1)) {
         nextPlayer = 0;
     }
 
     // state->numBuys++;//Increase buys by 1!
-    state->numBuys--; // BUG #1
+    state->numBuys--; // BUG #2
 
     if (choice1 > 0) { //Boolean true or going to discard an estate
         int p = 0;//Iterator for hand!
@@ -724,8 +724,8 @@ int baronCardEffect()(int card, int choice1, int choice2, int choice3, struct ga
                     printf("Must gain an estate if there are any\n");
                 }
                 if (supplyCount(estate, state) > 0) {
-                    //gainCard(estate, state, 0, currentPlayer);
-                    baronCardEffect(card, choice1, choice2, choice3, state, handPos, bonus); // BUG #2
+                    gainCard(estate, state, 0, currentPlayer);
+                    //baronCardEffect(card, choice1, choice2, choice3, state, handPos, bonus); // BUG #1
 
                     state->supplyCount[estate]--;//Decrement estates
                     if (supplyCount(estate, state) == 0) {
@@ -755,26 +755,26 @@ int baronCardEffect()(int card, int choice1, int choice2, int choice3, struct ga
 }
 
 
-int MinionCardEffect()(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int MinionCardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
     int i;
     int j;
-    int k;
-    int x;
-    int index;
+    //int k;
+    //int x;
+    //int index;
     //int currentPlayer = whoseTurn(state);
-    int currentPlayer; // BUG #4
+    int currentPlayer = state->whoseTurn; // BUG
     int nextPlayer = currentPlayer + 1;
 
-    int temphand[MAX_HAND];// moved above the if statement
-    int drawntreasure=0;
-    int cardDrawn;
-    int z = 0;// this is the counter for the temp hand
+    //int temphand[MAX_HAND];// moved above the if statement
+    //int drawntreasure=0;
+    //int cardDrawn;
+    //int z = 0;// this is the counter for the temp hand
     if (nextPlayer > (state->numPlayers - 1)) {
         nextPlayer = 0;
     }
 
-    //+1 action
+    //+1 action // BUG #3
     state->numActions++;
 
     //discard card from hand
@@ -794,7 +794,7 @@ int MinionCardEffect()(int card, int choice1, int choice2, int choice3, struct g
 
         //draw 4
         //for (i = 0; i < 4; i++)
-        for (i = 0; i < 400; i++) // BUG #3
+        for (i = 0; i < 400; i++) // BUG 
         {
             drawCard(currentPlayer, state);
         }
@@ -825,20 +825,20 @@ int MinionCardEffect()(int card, int choice1, int choice2, int choice3, struct g
 }
 
 
-int AmbassadorCardEffect()(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int AmbassadorCardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
     int i;
     int j;
-    int k;
-    int x;
-    int index;
+    //int k;
+    //int x;
+    //int index;
     int currentPlayer = whoseTurn(state);
     int nextPlayer = currentPlayer + 1;
 
-    int temphand[MAX_HAND];// moved above the if statement
-    int drawntreasure=0;
-    int cardDrawn;
-    int z = 0;// this is the counter for the temp hand
+    //int temphand[MAX_HAND];// moved above the if statement
+    //int drawntreasure=0;
+    //int cardDrawn;
+    //int z = 0;// this is the counter for the temp hand
     if (nextPlayer > (state->numPlayers - 1)) {
         nextPlayer = 0;
     }
@@ -852,8 +852,8 @@ int AmbassadorCardEffect()(int card, int choice1, int choice2, int choice3, stru
 
     if (choice1 == handPos)
     {
-       // return -1;
-       continue; // BUG #5 
+       return -1;
+       //continue; // BUG removed continue statement to avoid SEGFAULT 
     }
 
     for (i = 0; i < state->handCount[currentPlayer]; i++)
@@ -880,7 +880,7 @@ int AmbassadorCardEffect()(int card, int choice1, int choice2, int choice3, stru
         if (i != currentPlayer)
         {
             // gainCard(state->hand[currentPlayer][choice1], state, 0, i);
-            gainCard(state->hand[currentPlayer][0], state, 0, i); // BUG #6
+            gainCard(state->hand[currentPlayer][0], state, 0, i); // BUG 
         }
     }
 
@@ -904,20 +904,20 @@ int AmbassadorCardEffect()(int card, int choice1, int choice2, int choice3, stru
 }
 
 
-int TributeCardEffect()(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int TributeCardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
     int i;
-    int j;
-    int k;
-    int x;
-    int index;
+    //int j;
+    //int k;
+    //int x;
+    //int index;
     int currentPlayer = whoseTurn(state);
     int nextPlayer = currentPlayer + 1;
 
-    int temphand[MAX_HAND];// moved above the if statement
-    int drawntreasure=0;
-    int cardDrawn;
-    int z = 0;// this is the counter for the temp hand
+    //int temphand[MAX_HAND];// moved above the if statement
+    //int drawntreasure=0;
+    //int cardDrawn;
+    //int z = 0;// this is the counter for the temp hand
     if (nextPlayer > (state->numPlayers - 1)) {
         nextPlayer = 0;
     }
@@ -951,7 +951,7 @@ int TributeCardEffect()(int card, int choice1, int choice2, int choice3, struct 
             }
 
             // shuffle(nextPlayer,state);//Shuffle the deck
-            // BUG #7 is removing this
+            // BUG removing this
         }
         tributeRevealedCards[0] = state->deck[nextPlayer][state->deckCount[nextPlayer]-1];
         state->deck[nextPlayer][state->deckCount[nextPlayer]--] = -1;
@@ -968,7 +968,7 @@ int TributeCardEffect()(int card, int choice1, int choice2, int choice3, struct 
     }
 
     //for (i = 0; i <= 2; i ++) {
-      for (i = 0; i <= 3; i ++) { // BUG # 8
+      for (i = 0; i <= 3; i ++) { // BUG 
         if (tributeRevealedCards[i] == copper || tributeRevealedCards[i] == silver || tributeRevealedCards[i] == gold) { //Treasure cards
             state->coins += 2;
         }
@@ -986,26 +986,26 @@ int TributeCardEffect()(int card, int choice1, int choice2, int choice3, struct 
 }
 
 
-int MineCardEffect()(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
+int MineCardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
     int i;
     int j;
-    int k;
-    int x;
-    int index;
+    //int k;
+    //int x;
+    //int index;
     int currentPlayer = whoseTurn(state);
     int nextPlayer = currentPlayer + 1;
 
-    int temphand[MAX_HAND];// moved above the if statement
-    int drawntreasure=0;
-    int cardDrawn;
-    int z = 0;// this is the counter for the temp hand
+    //int temphand[MAX_HAND];// moved above the if statement
+    //int drawntreasure=0;
+    //int cardDrawn;
+    //int z = 0;// this is the counter for the temp hand
     if (nextPlayer > (state->numPlayers - 1)) {
         nextPlayer = 0;
     }
 
     // j = state->hand[currentPlayer][choice1];  //store card we will trash
-    j = state->hand[nextPlayer][choice1];     // BUG #9
+    j = state->hand[nextPlayer][choice1];     // BUG 
 
     if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
     {
@@ -1015,7 +1015,7 @@ int MineCardEffect()(int card, int choice1, int choice2, int choice3, struct gam
 //    if (choice2 > treasure_map || choice2 < curse)
 //    {
 //        return -1;
-//    } // BUG #10
+//    } // BUG 
 
     if ( (getCost(state->hand[currentPlayer][choice1]) + 3) > getCost(choice2) )
     {
@@ -1217,7 +1217,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
     case baron:
         // this card was refactored into its own code for Assignment 2
-        baronCardEffect(card, choice1, choice2, choice3, state, handPos, bonus)
+        baronCardEffect(card, choice1, choice2, choice3, state, handPos, bonus);
         return 0;
 
     case great_hall:
@@ -1233,7 +1233,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
     case minion:
         // this card was refactored into its own code for Assignment 2
-        minionCardEffect(card, choice1, choice2, choice3, state, handPos, bonus)
+        MinionCardEffect(card, choice1, choice2, choice3, state, handPos, bonus);
         return 0;
 
     case steward:
@@ -1261,17 +1261,17 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
     case tribute:
         // this card was refactored into its own code for Assignment 2
-        tributeCardEffect(card, choice1, choice2, choice3, state, handPos, bonus)
+        TributeCardEffect(card, choice1, choice2, choice3, state, handPos, bonus);
         return 0;
 
     case ambassador:
         // this card was refactored into its own code for Assignment 2
-        ambassadorCardEffect(card, choice1, choice2, choice3, state, handPos, bonus)
+        AmbassadorCardEffect(card, choice1, choice2, choice3, state, handPos, bonus);
         return 0;
 
     case cutpurse:
         // this card was refactored into its own code for Assignment 2
-        cutpurseCardEffect(card, choice1, choice2, choice3, state, handPos, bonus)
+        //cutpurseCardEffect(card, choice1, choice2, choice3, state, handPos, bonus);
         return 0;
 
         updateCoins(currentPlayer, state, 2);
