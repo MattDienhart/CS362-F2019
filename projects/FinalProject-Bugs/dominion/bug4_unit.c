@@ -32,7 +32,7 @@ int main() {
    // declare the game state
    struct gameState G;
 
-   printf("Begin testing the mine card within cardEffect():\n");
+   printf("Begin testing the isGameOver() function:\n");
 
    // set up the game state for testing
    int seed = 5; // arbitrary seed for RNG
@@ -41,7 +41,7 @@ int main() {
    // set up test-specific conditions
    
    // player attempts to trash an estate card and gain a province card
-   printf(" -- Testing Bug #1 --\n");
+   printf(" -- Testing Bug #4 --\n");
    initializeGame(2, k, seed, &G);
    
    // set supply piles for all cards to 3

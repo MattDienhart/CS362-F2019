@@ -32,7 +32,7 @@ int main() {
    // declare the game state
    struct gameState G;
 
-   printf("Begin testing the mine card within cardEffect():\n");
+   printf("Begin testing the remodel card within cardEffect():\n");
 
    // set up the game state for testing
    int seed = 5; // arbitrary seed for RNG
@@ -43,7 +43,7 @@ int main() {
    // set up test-specific conditions
    
    // player attempts to trash an estate card and gain a province card
-   printf(" -- Testing Bug #1 --\n");
+   printf(" -- Testing Bug #3 --\n");
    initializeGame(2, k, seed, &G);
    G.handCount[player] = 2;
    G.hand[player][0] = remodel;
