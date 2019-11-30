@@ -57,7 +57,7 @@ int main() {
    printf("Checking if Player 1's hand size has stayed the same: ");
    custom_assert(G.handCount[player] == 2);
    printf("Checking if Player 1 still has the Estate card: ");
-   custom_assert(G.discard[player][G.handCount[player]-1] == estate);
+   custom_assert(G.handCount[player] > 0 && G.hand[player][G.handCount[player]-1] == estate);
    printf("Checking if there is no change to the supply of Province cards: ");
    custom_assert(G.supplyCount[province] == 2);
    printf("Checking if Player 1's discard pile is still empty: ");

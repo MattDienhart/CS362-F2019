@@ -57,10 +57,10 @@ int main() {
    // show test result
    printf("Checking if Player 1's hand size has decreased by 2: ");
    custom_assert(G.handCount[player] == 0);
-   printf("Checking if Player 1's discard pile has increased by 1: ");
-   custom_assert(G.discardCount[player] == 1);
+   printf("Checking if Player 1's discard pile has increased by 2: ");
+   custom_assert(G.discardCount[player] == 2);
    printf("Checking if Player 1's discard pile now contains the Mine card: ");
-   custom_assert(G.discard[player][0] == mine);
+   custom_assert(G.discard[player][0] == mine || G.discard[player][1] == mine);
    printf("Checking if the played cards pile is still empty: ");
    custom_assert(G.playedCardCount == 0);
 

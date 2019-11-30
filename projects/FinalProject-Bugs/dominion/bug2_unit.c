@@ -57,7 +57,7 @@ int main() {
    printf("Checking if Player 1's hand size has stayed the same: ");
    custom_assert(G.handCount[player] == 2);
    printf("Checking if Player 1 still has the Copper card: ");
-   custom_assert(G.discard[player][G.handCount[player]-1] == copper);
+   custom_assert(G.handCount[player] > 0 && G.hand[player][G.handCount[player]-1] == copper);
    printf("Checking if there is no change to the supply of Gold cards: ");
    custom_assert(G.supplyCount[gold] == 1);
    printf("Checking if Player 1's discard pile is still empty: ");
