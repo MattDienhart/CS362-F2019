@@ -467,7 +467,7 @@ int scoreFor (int player, struct gameState *state) {
     }
 
     //score from deck
-    for (i = 0; i < state->discardCount[player]; i++)
+    for (i = 0; i < state->deckCount[player]; i++) // changed from discardCount to deckCount to fix bug 5
     {
         if (state->deck[player][i] == curse) {
             score = score - 1;
@@ -760,7 +760,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         //Backup hand
 
         //Update Coins for Buy
-        updateCoins(currentPlayer, state, 5);
+        //updateCoins(currentPlayer, state, 5); // removed this line to fix bug 6, along with the other change below
         x = 1;//Condition to loop on
         while( x == 1) {//Buy one card
             if (supplyCount(choice1, state) <= 0) {
@@ -771,11 +771,11 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
                     printf("Cards Left: %d\n", supplyCount(choice1, state));
                 }
             }
-            else if (state->coins < getCost(choice1)) {
+            else if (5 < getCost(choice1)) { // changed state->coins to 5 to fix bug 6, along with the other change above. 
                 printf("That card is too expensive!\n");
 
                 if (DEBUG) {
-                    printf("Coins: %d < %d\n", state->coins, getCost(choice1));
+                    printf("Coins: %d < %d\n", *bonus, getCost(choice1));
                 }
             }
             else {
@@ -898,7 +898,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
             int card_not_discarded = 1;//Flag for discard set!
             while(card_not_discarded) {
                 if (state->hand[currentPlayer][p] == estate) { //Found an estate card!
-                    state->coins += 4;//Add 4 coins to the amount of coins
+                    *bonus += 4;//Add 4 coins to the amount of coins
                     state->discard[currentPlayer][state->discardCount[currentPlayer]] = state->hand[currentPlayer][p];
                     state->discardCount[currentPlayer]++;
                     for (; p < state->handCount[currentPlayer]; p++) {
@@ -964,7 +964,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
 		if (choice1)
         {
-            state->coins = state->coins + 2;
+            *bonus = *bonus + 2;
         }
         else if (choice2)		//discard hand, redraw 4, other players with 5+ cards discard hand and draw 4
         {
@@ -1015,7 +1015,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         else if (choice1 == 2)
         {
             //+2 coins
-            state->coins = state->coins + 2;
+            *bonus = *bonus + 2;
         }
         else
         {
@@ -1076,7 +1076,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         for (i = 0; i < 2; i ++) {
             if (tributeRevealedCards[i] == copper || tributeRevealedCards[i] == silver || tributeRevealedCards[i] == gold) { //Treasure cards
 
-				state->coins += 2;
+				*bonus += 2;
             }
 
             else if (tributeRevealedCards[i] == estate || tributeRevealedCards[i] == duchy || tributeRevealedCards[i] == province || tributeRevealedCards[i] == gardens || tributeRevealedCards[i] == great_hall) { //Victory Card Found
@@ -1190,7 +1190,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
     case embargo:
         //+2 Coins
-        state->coins = state->coins + 2;
+        *bonus = *bonus + 2;
 
         //see if selected pile is in play
         if ( state->supplyCount[choice1] == -1 )
@@ -1220,7 +1220,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         if (choice1)
         {
             //gain coins equal to trashed card
-            state->coins = state->coins + getCost( handCard(choice1, state) );
+            *bonus = *bonus + getCost( handCard(choice1, state) );
             //trash card
             discardCard(choice1, currentPlayer, state, 1);
         }
@@ -1383,4 +1383,3 @@ int updateCoins(int player, struct gameState *state, int bonus)
 
 
 //end of dominion.c
-
